@@ -1,3 +1,6 @@
+import os
+import re
+
 from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
@@ -13,7 +16,13 @@ app = Flask(__name__)
 # specify the location of data.db
 # "sqlite:///data.db" => it is in root folder
 # you can use MySQL, Postgres etc..
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+
+uri = os.getenv("DATABASE_URL")  # or other relevant config var
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+    'DATABASE_URL', 'sqlite:///data.db')
 
 # turn off the flask modification tracker
 # SQLAlchemy has it's own tracker which is active
