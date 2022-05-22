@@ -17,12 +17,11 @@ app = Flask(__name__)
 # "sqlite:///data.db" => it is in root folder
 # you can use MySQL, Postgres etc..
 
-uri = os.getenv("DATABASE_URL")  # or other relevant config var
+uri = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
 if uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://", 1)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'DATABASE_URL', 'sqlite:///data.db')
+ 
+app.config['SQLALCHEMY_DATABASE_URI'] = uri
 
 # turn off the flask modification tracker
 # SQLAlchemy has it's own tracker which is active
